@@ -1,5 +1,4 @@
 #include "hash.h"
-#include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -42,4 +41,5 @@ void modifyMapElement(map *m, char *key, int32_t element) {
 
 int32_t getMapElement(map m, char *key) {
 	return (m.ptr) ? m.ptr[getHashKey(key)] : 0;
+
 }

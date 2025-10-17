@@ -1,54 +1,59 @@
-#ifndef HASH_H
-#define HASH_H
+#ifndef MAP_H
+#define MAP_H
 
-#include <stdint.h>
+// To avoid problems I comment it
+// #include "operations.h"
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 
-#define MAX_KEY_LENGHT		256
+#define MAX_KEY_LENGHT		(256)
 
-typedef uint16_t keysize_t;
+typedef int32_t value_t;
 
-typedef struct Map {
-	int32_t *ptr;
-} map;
+struct map_element {
+	char *key;
+	value_t value;
+};
 
-/* Funzione Hash
- * Inizia tutto da qui
- * Se la stringa sorpassa il limite ritorna 0
+typedef struct map {
+	map_element *ptr;
+	size_t lenght;
+} map_t;
+
+/* Creates a fixed sise representation of the given string (max lenght 256)
+ * @param key: A string used to encript the data
+ * @return: A fixed size number which is the result of the encription of the string
  *
  */
-keysize_t getHashKey(char *string);
-
-// Gestione della mappa
-
-/* Creatore per mappa hash
- * Per evitare allocazione manuale della memoria,
- * generatore del seme per la mappa.
- * Se la usi è consigliato chiamare la funzione closeMap()
- * quando non serve più
+size_t hash(char *key);
+/* Transforms the result of the hash function for the map_t
+ * @param m: the map_t for which we have to accomodate the hash
+ * @param key: String used to encript the data
  *
  */
-void newMap(map *map);
-/* Distruttore per mappa hash
- * Dealloca risorse usate per la mappa
+size_t hash_val(map_t m, char *key);
+
+/* Creates hashmap and allocates resources for it
+ * @return: a fresh empty new map_t
  *
  */
-void closeMap(map *map);
-
-// Elaborazione dei dati della mappa
-
-/* Cambia elemento nella mappa in base alla chiave
- * Se la chiave non è valida il valore verrà scritto
- * all'indirizzo di ptr (quello default)
+map_t new_map();
+/* Frees allocated memory and set everything to 0
+ * @param m: a pointer to the map_t whose resources need to be freed
  *
  */
-void modifyMapElement(map *m, char *key, int32_t element);
-/* Ottieni elemento in base alla chiave
- * Se la chiave non è valida ottieni comportamento non definito (ti sta bene)
- * Se il puntatore, per qualche ragione, è NULL ritorna 0
- *
- */
-int32_t getMapElement(map m, char *key);
+void close_map(map_t *m);
 
-#endif // HASH_H
+// Adds new element to the map_t and sets its value
+void append_map(map_t *m, char *key, value_t value);
+// Removes element from map_t and returns the value
+value_t pop_map(map_t *m, char *key);
+// Changes an existing element of the map_t
+void change_map(map_t m, char *key, value_t new_value);
+// Returns value of a map_t element
+value_t get_map(map_t m, char *key);
+
+#include "operations.h"
+
+#endif // MAP_H
